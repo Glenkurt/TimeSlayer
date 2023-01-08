@@ -1,23 +1,11 @@
 import React, { useState, useEffect } from "react";
-
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import ButtonSession from "./buttonSession";
 const Countdown = ({ timer, onComplete }) => {
-  const [timeLeft, setTimeLeft] = useState(timer);
   const [isRunning, setIsRunning] = useState(false);
-  let intervalId = null;
+  const [key, setKey] = useState(0)
   
-// useEffect to manage the countdown
-  useEffect(() => {
-    if (timeLeft === 0) {
-      // Increment the count
-      onComplete();
-    }
-  if (isRunning) {
-    intervalId = setTimeout(() => {
-      setTimeLeft(timeLeft - 1);
-    }, 1000);
-  } 
-  return () => clearInterval(intervalId);
-}, [timeLeft, isRunning]);
+
 
 useEffect(() => {
   resetTimer()
@@ -39,33 +27,42 @@ useEffect(() => {
     setIsRunning(false);
   };
 
-  const resetTimer = () => {
-    setTimeLeft(timer);
+  const resetTimer = () => { 
     setIsRunning(false);
-    
+    setKey(prevKey => prevKey + 1)
   };
- 
-// Define totalSeconds and timeLeftSeconds variables
-let totalSeconds = Math.abs(timeLeft);
-let timeLeftSeconds = totalSeconds;
 
-// Calculate the number of minutes and seconds remaining
-const minutes = Math.floor(timeLeftSeconds / 60);
-timeLeftSeconds %= 60;
-const seconds = timeLeftSeconds;
-  
 
-  
+  const children = ({ remainingTime }) => {
+    const minutes = Math.floor(remainingTime / 60)
+    const seconds = remainingTime % 60
+    useEffect(() => {
+      if (remainingTime === 0) {
+        onComplete();
+        return (
+          clearInterval(remainingTime)
+        );
+      }
+    }, [remainingTime]);
+      return  (seconds < 10) ?`${minutes}:0${seconds}`:`${minutes}:${seconds}`
+}
+
 
   return (
     <div className="flex flex-col items-center justify-between p-4">
-      <h1 className="text-5xl font-bold flex-grow flex-shrink">
-       {(timeLeft < 0) ? "-" : ""} {minutes}:{seconds.toString().padStart(2, "0")}
-      </h1>
-      <div className="flex justify-between flex-grow flex-shrink">
-        <button className="px-4 py-2 rounded-full bg-blue-500 text-white font-bold" onClick={startTimer}>Start</button>
-        <button className="px-4 py-2 rounded-full bg-blue-500 text-white font-bold" onClick={stopTimer}>Stop</button>
-        <button className="px-4 py-2 rounded-full bg-blue-500 text-white font-bold" onClick={resetTimer}>Reset</button>
+
+      <CountdownCircleTimer
+        isPlaying={isRunning}
+        duration={timer}
+        key={key}
+        colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+        colorsTime={[7, 5, 2, 0]}>
+        {children}
+        </CountdownCircleTimer>
+      <div className="flex justify-between mt-5 flex-grow flex-shrink">
+        <ButtonSession handleClick={startTimer} name='Start' />
+        <ButtonSession handleClick={stopTimer} name='Stop' />
+        <ButtonSession handleClick={resetTimer} name='Reset' />
       </div>
     </div>
   );
