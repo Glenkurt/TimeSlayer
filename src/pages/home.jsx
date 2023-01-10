@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import ButtonSession from '../Componnents/buttonSession'
 
-const Home = () => {
+const HomePage = () => {
   return (
       
           <div className="container  mx-auto px-6 py-8">
@@ -14,4 +14,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default HomePage
