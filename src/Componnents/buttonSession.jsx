@@ -1,9 +1,9 @@
 import React from 'react'
 
-const ButtonSession = ({handleClick, name} ) => {
+const ButtonSession = ({handleClick, name, className} ) => {
   return (
       <button
-      className="px-4 py-2 rounded bg-mid text-light font-bold"
+      className={`${className} px-4 py-2 rounded text-light font-bold}`}
       onClick={handleClick}>
           {name}         
       </button>
@@ -11,14 +11,4 @@ const ButtonSession = ({handleClick, name} ) => {
 }
 
 export default ButtonSession
-// import React from 'react'
 
-// const Button = ({title, activeClass, _callback}) => {
-//     return (
-//         <div>
-//             <button className={activeClass} onClick={_callback}>{title}</button>
-//         </div>
-//     )
-// }
-
-// export default Button

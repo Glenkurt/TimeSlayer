@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import ButtonSession from "./buttonSession";
+import { TimersContext } from "../context/TimerContext";
 const Countdown = ({ timer, onComplete }) => {
+  const { session } = useContext(TimersContext);
+
   const [isRunning, setIsRunning] = useState(false);
   const [key, setKey] = useState(0)
   
@@ -44,25 +47,40 @@ useEffect(() => {
         );
       }
     }, [remainingTime]);
-      return  (seconds < 10) ?`${minutes}:0${seconds}`:`${minutes}:${seconds}`
+     return <div className="text-3xl text-light text-bold">{(seconds < 10) ? `${minutes}:0${seconds}` : `${minutes}:${seconds}`}</div>
+  }
+const handleColor=()=>{
+  switch (session) {
+      case 'work':
+          return [['#73AB84']]
+
+      case 'shortBreak':
+          return [['#E57A44']]
+
+      case 'longBreak':
+          return [['#155E75']]
+
+      default:
+          break;
+  }
 }
 
-
   return (
-    <div className="flex flex-col items-center justify-between p-4">
+    <div className="flex flex-col items-center justify-between  p-4">
 
       <CountdownCircleTimer
+        
         isPlaying={isRunning}
         duration={timer}
         key={key}
-        colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-        colorsTime={[7, 5, 2, 0]}>
+        colors={handleColor()}
+      >
         {children}
         </CountdownCircleTimer>
-      <div className="flex justify-between mt-5 flex-grow flex-shrink">
-        <ButtonSession handleClick={startTimer} name='Start' />
-        <ButtonSession handleClick={stopTimer} name='Stop' />
-        <ButtonSession handleClick={resetTimer} name='Reset' />
+      <div className="flex justify-between mt-5 ">
+        <ButtonSession className={`mr-4 bg-mid`} handleClick={startTimer} name='Start' />
+        <ButtonSession className={`mx-4 bg-mid`} handleClick={stopTimer} name='Stop' />
+        <ButtonSession className={`ml-4 bg-mid`} handleClick={resetTimer} name='Reset' />
       </div>
     </div>
   );

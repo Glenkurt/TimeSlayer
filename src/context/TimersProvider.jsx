@@ -7,9 +7,15 @@ function TimersProvider({ children }) {
     shortBreakTimer: 5 * 60,
     longBreakTimer: 15 * 60,
   });
-
+  const [session, setSession] = useState('work')
   return (
-    <TimersContext.Provider value={{ timers, setTimers }}>
+    <TimersContext.Provider
+      value={{
+        timers,
+        setTimers,
+        session,
+        setSession
+      }}>
       {children}
     </TimersContext.Provider>
   );

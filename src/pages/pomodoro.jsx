@@ -5,10 +5,10 @@ import ButtonSession from "../Componnents/buttonSession";
 import { TimersContext } from "../context/TimerContext";
 
 const PomodoroPage = () => {
-  const { timers } = useContext(TimersContext);
+  const { timers, session, setSession } = useContext(TimersContext);
+
   const [count, setCount] = useState(0);
   const [timer, setTimer] = useState(timers.workTimer);
-  const [session, setSession] = useState("work");
   const handleWorkClick = () => {
     setTimer(timers.workTimer);
     setSession("work");
@@ -21,40 +21,67 @@ const PomodoroPage = () => {
 
   const handleLongBreakClick = () => {
     setTimer(timers.longBreakTimer);
-    setSession("longtBreak");
+    setSession("longBreak");
   };
   const handleCountdownComplete = () => {
+    var sound = new Audio("/gong1.mp3");
     if (session === "work") setCount((count) => count + 1);
-    console.log("click");
+    sound.volume = 0.5;
+    sound.play();
   };
-
+  
+  const background = (session) => {
+    switch (session) {
+      case "work":
+        return "from-brand to-dark   ";
+      case "shortBreak":
+        return "from-break ";
+      case "longBreak":
+        return "from-coffee ";
+      default:
+        break;
+    }
+  };
   return (
-    <>
+    <div className={` min-h-screen  bg-gradient-to-r ${background(session)}`}>
       <div className="text-3xl text-center text-brand">
-        {session === "work" ? (
-          <h1>Let's Focus</h1>
+        
+      {session === "work" ? (
+          <h1 className="py-10 font-bold ">Let's Focus</h1>
         ) : session === "shortBreak" ? (
-          <h1> Small Break</h1>
+          <h1 className="py-10 font-bold "> Small Break</h1>
         ) : (
-          <h1>Coffee Time</h1>
+          <h1 className="py-10 font-bold ">Coffee Time</h1>
         )}
       </div>
-      <CountdownWrapper>
-        <Countdown timer={timer} onComplete={handleCountdownComplete} />
-      </CountdownWrapper>
-      <div className="flex justify-center mt-10">
-        <ButtonSession handleClick={handleWorkClick} name="Let's work" />
-        <ButtonSession handleClick={handleShortBreakClick} name="Short break" />
-        <ButtonSession handleClick={handleLongBreakClick} name="Long Break" />
+      <div className="flex w-64 md:w-96 mx-auto    my-10">
+        <ButtonSession
+          className={`mr-4 ${session == "work" ? "bg-brand" : "bg-dark"}`}
+          handleClick={handleWorkClick}
+          name="Let's work"
+        />
+        <ButtonSession
+          className={`mx-4 ${session == "shortBreak" ? "bg-brand" : "bg-dark"}`}
+          handleClick={handleShortBreakClick}
+          name="Short break"
+        />
+        <ButtonSession
+          className={`ml-4 ${session == "longBreak" ? "bg-brand" : "bg-dark"}`}
+          handleClick={handleLongBreakClick}
+          name="Long Break"
+        />
       </div>
-      <div className="text-2xl text-center">
+      <Countdown timer={timer} onComplete={handleCountdownComplete} />
+      <div className="text-2xl text-center text-light mt-10">
         {count >= 4 && <p>Congratulation :D</p>}
-        { count == 1 && <p>During this session you've done: {count} work period</p>
-        }
-        { count > 1 && <p>During this session you've done: {count} work periods</p>
-        }
-      </div> 
-    </>
+        {count == 1 && (
+          <p>During this session you've done: {count} work period</p>
+        )}
+        {count > 1 && (
+          <p>During this session you've done: {count} work periods</p>
+        )}
+      </div>
+    </div>
   );
 };
 
